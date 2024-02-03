@@ -3,6 +3,7 @@ import cron from 'node-cron';
 import { Rate } from '../models/rate.js';
 import { ApiError } from '../exeptions/api.error.js';
 import { nodemailerService } from './nodemailer.service.js';
+import { exchangeRateGauge } from './prometheus-metrics.js';
 
 const BTC_API = 'https://btc-trade.com.ua/api/ticker/btc_uah';
 
@@ -54,6 +55,8 @@ export const getRate = async() => {
 
 export const sendEmails = async() => {
   const currentRate = await getRate();
+
+  exchangeRateGauge.set(currentRate);
 
   const [sended, errors] = await nodemailerService
     .sendEmailToSubscribedUsers(currentRate);

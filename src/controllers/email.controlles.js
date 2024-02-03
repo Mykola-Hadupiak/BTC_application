@@ -1,5 +1,9 @@
 import * as emailService from '../services/email.service.js';
 import { ApiError } from '../exeptions/api.error.js';
+import {
+  emailSubscribeCount,
+  emailUnsubscribeCount,
+} from '../services/prometheus-metrics.js';
 
 export const get = async(req, res) => {
   const emails = await emailService.getAll();
@@ -24,6 +28,8 @@ export const create = async(req, res) => {
 
   await emailService.create(email);
 
+  emailSubscribeCount.inc();
+
   res.status(200)
     .json({ message: 'Email added' });
 };
@@ -46,6 +52,8 @@ export const remove = async(req, res) => {
   }
 
   await emailService.remove(email);
+
+  emailUnsubscribeCount.inc();
 
   res.status(200)
     .json({ message: 'Email deleted' });

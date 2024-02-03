@@ -2,6 +2,10 @@ import 'dotenv/config';
 import nodemailer from 'nodemailer';
 import { ApiError } from '../exeptions/api.error.js';
 import { Email } from '../models/email.js';
+import {
+  emailSendCount,
+  emailSendErrorCount,
+} from './prometheus-metrics.js';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -57,9 +61,11 @@ async function sendEmailToSubscribedUsers(currentRate) {
         currentRate,
       });
 
+      emailSendCount.inc();
       sended.push(email.email);
     } catch (error) {
       errors.push(email.email);
+      emailSendErrorCount.inc();
 
       continue;
     }
