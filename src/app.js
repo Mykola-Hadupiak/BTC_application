@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3005;
 const app = express();
 
 app.use(express.json());
-app.use('/api/emails', express.json(), emailRouter);
-app.use('/api/rate', express.json(), rateRouter);
+app.use('/api/emails', emailRouter);
+app.use('/api/rate', rateRouter);
 
 app.use(errorMiddleware);
 

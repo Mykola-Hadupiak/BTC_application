@@ -12,7 +12,7 @@ export const create = async(req, res) => {
 
   if (!email || typeof email !== 'string') {
     throw ApiError.badRequest('Bad request', {
-      name: 'Email is not valid',
+      name: 'Email should be string and not empty',
     });
   }
 
@@ -24,11 +24,18 @@ export const create = async(req, res) => {
 
   await emailService.create(email);
 
-  res.status(200).json({ message: 'Email added' });
+  res.status(200)
+    .json({ message: 'Email added' });
 };
 
 export const remove = async(req, res) => {
   const { email } = req.body;
+
+  if (typeof email !== 'string') {
+    throw ApiError.badRequest('Bad request', {
+      name: 'Email should be a string',
+    });
+  }
 
   const isExist = await emailService.getOne(email);
 
@@ -40,5 +47,6 @@ export const remove = async(req, res) => {
 
   await emailService.remove(email);
 
-  res.status(200).json({ message: 'Email deleted' });
+  res.status(200)
+    .json({ message: 'Email deleted' });
 };

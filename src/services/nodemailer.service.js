@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import nodemailer from 'nodemailer';
+import { ApiError } from '../exeptions/api.error.js';
+import { Email } from '../models/email.js';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -35,6 +37,38 @@ function sendEmailWithRate({ email, subject, currentRate }) {
   });
 }
 
+async function sendEmailToSubscribedUsers(currentRate) {
+  const subscribedEmails = await Email.findAll({
+    where: { status: 'subscribed' },
+  });
+
+  const errors = [];
+  const sended = [];
+
+  if (subscribedEmails.length === 0) {
+    throw ApiError.cannotPost('There are no subscribed emails');
+  }
+
+  for (const email of subscribedEmails) {
+    try {
+      await nodemailerService.sendEmailWithRate({
+        email: email.email,
+        subject: 'BTC UAH Exchange Rate Update',
+        currentRate,
+      });
+
+      sended.push(email.email);
+    } catch (error) {
+      errors.push(email.email);
+
+      continue;
+    }
+  }
+
+  return [sended, errors];
+}
+
 export const nodemailerService = {
   sendEmailWithRate,
+  sendEmailToSubscribedUsers,
 };

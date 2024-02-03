@@ -28,29 +28,25 @@ export const create = async(email) => {
       existingEmail.status = 'subscribed';
       existingEmail.deletedAt = null;
       existingEmail.createdAt = Sequelize.fn('NOW');
+
       await existingEmail.save();
     } else {
       await Email.create({ email });
     }
   } catch (error) {
-    throw ApiError.cannotCreate();
+    throw ApiError.cannotPost('Cannot create');
   }
 };
 
 export const remove = async(email) => {
-  if (!email || typeof email !== 'string') {
-    throw ApiError.badRequest('Bad request', {
-      name: 'Email is not valid',
-    });
-  }
-
   try {
     const existingEmail = await getOne(email);
 
     existingEmail.status = 'unsubscribed';
     existingEmail.deletedAt = Sequelize.fn('NOW');
+
     await existingEmail.save();
   } catch (error) {
-    throw ApiError.cannotDelete();
+    throw ApiError.cannotPost('Cannot delete');
   }
 };

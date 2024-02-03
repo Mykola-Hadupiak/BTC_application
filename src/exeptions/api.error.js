@@ -30,16 +30,9 @@ export class ApiError extends Error {
     });
   }
 
-  static cannotCreate() {
+  static cannotPost(message) {
     return new ApiError({
-      message: 'Cannot create',
-      status: 404,
-    });
-  }
-
-  static cannotDelete() {
-    return new ApiError({
-      message: 'Cannot delete',
+      message,
       status: 404,
     });
   }
