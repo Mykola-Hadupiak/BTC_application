@@ -105,13 +105,13 @@ The email will look like:
 
 1. Sending a GET request to **/metrics** will give you a metrics with:
 
-email_subscribe_count
-email_unsubscribe_count
-email_send_count
-email_send_error_count
+email_subscribe_count</br>
+email_unsubscribe_count</br>
+email_send_count</br>
+email_send_error_count</br>
 exchange_rate
 
-</br></br>
+</br>
 
 **_ADDITIONAL_**
 
